@@ -1,0 +1,35 @@
+meta {
+  name: get cert
+  type: http
+  seq: 3
+}
+
+get {
+  url: https://crt.sh/?d={{cert_id}}
+  body: none
+  auth: none
+}
+
+params:query {
+  d: {{cert_id}}
+}
+
+tests {
+  const { X509Certificate } = require('@peculiar/x509');
+  const x509 = new X509Certificate(res.body);
+  
+  console.log(x509);
+  test("http OK", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+  
+  test("valid subject", function() {
+    expect(x509.subject).to.eql("C=DE, ST=Baden-Württemberg, L=Gerlingen, O=Robert Bosch GmbH, CN=*.video.bosch.com");
+  })
+  
+  test("valid serial", function() {
+    expect(x509.serialNumber).to.eql("0a6c962914c37cf6c9d801199445e79f");
+  })
+  
+  
+}

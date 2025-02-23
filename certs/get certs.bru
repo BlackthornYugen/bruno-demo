@@ -1,0 +1,52 @@
+meta {
+  name: get certs
+  type: http
+  seq: 2
+}
+
+get {
+  url: https://crt.sh/?q=*.video.bosch.com&exclude=expired&group=none
+  body: none
+  auth: none
+}
+
+params:query {
+  q: *.video.bosch.com
+  exclude: expired
+  group: none
+}
+
+headers {
+  User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:135.0) Gecko/20100101 Firefox/135.0
+  Accept: application/json
+  Accept-Language: en-US,en;q=0.5
+  Accept-Encoding: gzip, deflate, br, zstd
+  Connection: keep-alive
+  Referer: https://crt.sh/?q=
+  Upgrade-Insecure-Requests: 1
+  Sec-Fetch-Dest: document
+  Sec-Fetch-Mode: navigate
+  Sec-Fetch-Site: same-origin
+  Sec-Fetch-User: ?1
+  Priority: u=0, i
+}
+
+script:post-response {
+  certs = res.getBody()
+  console.log(certs)
+  // Ensure certs is an array
+  certsArray = Array.isArray(certs) ? certs : Object.values(certs)[0]
+  
+  // Sort and get the latest certificate
+  latestCert = certsArray.sort((a, b) => new Date(b.not_before) - new Date(a.not_before))[0]
+  
+  // Extract the certificate ID
+  bru.setVar("cert_id", latestCert.id)
+  
+}
+
+tests {
+  test("http OK", function () {
+    expect(res.getStatus()).to.equal(200);
+  });
+}

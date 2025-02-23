@@ -1,0 +1,15 @@
+{
+  "version": "1",
+  "name": "BrunoDemo",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ],
+  "size": 0.000301361083984375,
+  "filesCount": 4,
+  "presets": {
+    "requestType": "http",
+    "requestUrl": "{{baseUrl}}"
+  }
+}
