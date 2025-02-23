@@ -17,11 +17,11 @@ body:json {
   }
 }
 
+assert {
+  res.status: eq 200
+}
+
 tests {
-  test("http OK", function () {
-    expect(res.getStatus()).to.equal(200);
-  });
-  
   test("user name valid", function () {
     expect(res.getBody()).to.contain({"name": req.getBody().name});
   });
